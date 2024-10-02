@@ -1,5 +1,7 @@
+import { createUser } from "@/lib/actions/users.actions";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 
 export async function POST(req: Request) {
@@ -30,9 +32,18 @@ export async function POST(req: Request) {
 
   const eventType = msg.type;
   if (eventType === "user.created") {
-    console.log(msg.data);
+    const { image_url, username, id, email_addresses } = msg.data;
+    const newUser = await createUser({
+      clerkId: id,
+      username: username!,
+      name: username!,
+      avatar: image_url,
+      email: email_addresses[0].email_address,
+    });
+    return NextResponse.json({
+      message: "create user success",
+      newUser,
+    });
   }
-  // Rest
-
   return new Response("OK", { status: 200 });
 }

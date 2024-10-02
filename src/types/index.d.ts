@@ -11,8 +11,8 @@ type TMenuItem = {
 type TCreateUserParams = {
   clerkId: string;
   username: string;
-  email_address: string;
-  avatar?: string;
+  email: string;
+avatar?: string;
   name?: string;
 };
 export { TMenuItem, TActiveLinkProps, TCreateUserParams };
