@@ -1,12 +1,13 @@
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
 import { Webhook } from "svix";
 
 const webhookSecret: string = process.env.WEBHOOK_SECRET as string;
 
 export async function POST(req: Request) {
-  const svix_id = req.headers.get("svix-id") ?? "";
-  const svix_timestamp = req.headers.get("svix-timestamp") ?? "";
-  const svix_signature = req.headers.get("svix-signature") ?? "";
+  const svix_id = headers().get("svix-id") ?? "";
+  const svix_timestamp = headers().get("svix-timestamp") ?? "";
+  const svix_signature = headers().get("svix-signature") ?? "";
 
   if (!webhookSecret) {
     throw new Error("Chỗ webhook này bị lỗi");
@@ -30,9 +31,11 @@ export async function POST(req: Request) {
   }
 
   const evenType = msg.type;
-  if(evenType === "user.created"){{
-    console.log(msg.data)
-  }}
+  if (evenType === "user.created") {
+    {
+      console.log(msg.data);
+    }
+  }
   // Rest
 
   return new Response("OK", { status: 200 });
