@@ -1,21 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use server";
 import { createUser } from "@/lib/actions/users.actions";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
-
+import dotenv from "dotenv";
+dotenv.config();
 export async function POST(req: Request) {
   const svix_id = headers().get("svix-id") ?? "";
   const svix_timestamp = headers().get("svix-timestamp") ?? "";
   const svix_signature = headers().get("svix-signature") ?? "";
 
   if (!process.env.WEBHOOK_SECRET) {
-    throw new Error("Chỗ webhook này bị lỗi");
+    throw new Error("WEBHOOK_SECRET is not set");
+  }
+  if (!svix_id || !svix_timestamp || !svix_signature) {
+    return new Response("Bad Request", { status: 400 });
   }
 
   const payload = await req.json();
   const body = JSON.stringify(payload);
   const sivx = new Webhook(process.env.WEBHOOK_SECRET);
+  console.log("🚀 ~ POST ~ WEBHOOK_SECRET:", process.env.WEBHOOK_SECRET);
 
   let msg: WebhookEvent;
 
@@ -26,7 +33,6 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.log("🚀 ~ POST ~ err:", err);
     return new Response("Bad Request", { status: 400 });
   }
 
@@ -41,7 +47,7 @@ export async function POST(req: Request) {
       email: email_addresses[0].email_address,
     });
     return NextResponse.json({
-      message: "create user success",
+      message: "OK",
       newUser,
     });
   }

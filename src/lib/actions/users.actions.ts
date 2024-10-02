@@ -1,3 +1,4 @@
+"use server";
 import User from "@/database/users.model";
 import { TCreateUserParams } from "@/types";
 import { connectToDatabase } from "../mongoose";
