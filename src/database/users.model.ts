@@ -6,7 +6,7 @@ export interface IUser extends Document {
   clerkId: string;
   name: string;
   username: string;
-  email_address: string;
+  email: string;
   avatar: string;
   // khóa ngoại liên kết tới bảng course
   courses: Schema.Types.ObjectId[];
@@ -26,7 +26,7 @@ const userSchema = new Schema<IUser>({
     unique: true,
     required: true,
   },
-  email_address: {
+  email: {
     type: String,
     unique: true,
     required: true,
