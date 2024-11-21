@@ -1,18 +1,16 @@
 import Heading from "@/components/common/Heading";
-import CourseItem from "@/components/course/CourseItem";
+import StudyCourse from "@/components/study/StudyCourse";
+import { getUserCourses } from "@/lib/actions/courses.action";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const courses = await getUserCourses();
+  if (!courses) return null;
+  
   return (
     <>
       <Heading>Khu vực học tập</Heading>
-      <div className=" bg-neutral-100 p-5 h-full">
-        <div className="grid grid-cols-3 gap-8">
-          <CourseItem></CourseItem>
-          <CourseItem></CourseItem>
-          <CourseItem></CourseItem>
-        </div>
-      </div>
+      <StudyCourse courses={JSON.parse(JSON.stringify(courses))}></StudyCourse>
     </>
   );
 };
