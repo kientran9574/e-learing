@@ -1,5 +1,5 @@
 "use server";
-import CourseManage from "@/components/course/CourseManage";
+import  CourseManage from "@/components/course/CourseManage";
 import { getCourseList } from "@/lib/actions/courses.action";
 import { ECourseStatus } from "@/types/enum";
 import React from "react";
