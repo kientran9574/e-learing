@@ -1,8 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/database/user.model";
-import { createOrder } from "@/lib/actions/order.actions";
+import { createOrder, getOrderDetails } from "@/lib/actions/order.actions";
 import { createOrderCode } from "@/utils";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
 
@@ -16,9 +17,10 @@ const ButtonEnroll = ({
   course: string;
   user: IUser | undefined;
   amount: number;
-  couponId: string;
+  couponId: string | null;
   total: number;
 }) => {
+  const router = useRouter();
   const handleEnrollCourse = async () => {
     console.log(user);
     if (!user?.name || !user?.email) {
@@ -32,8 +34,10 @@ const ButtonEnroll = ({
       course,
       total,
       amount,
-      coupon: couponId,
+      coupon: couponId || null,
     });
+    const order = await getOrderDetails(code);
+    router.push(`/order/${order.code}`);
   };
   return (
     <div className="relative w-full h-full rounded-full shadow-lg p-[2px] button-gradient">

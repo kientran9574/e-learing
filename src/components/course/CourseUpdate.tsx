@@ -117,7 +117,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
           views: values.views,
           status: values.status,
           level: values.level,
-          image: values.image,
+          image: values.image || "",
           info: {
             requirements: courseInfo.requirements,
             benefits: courseInfo.benefits,
@@ -140,6 +140,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
     }
   }
   const imgWatch = form.watch("image");
+  console.log(imgWatch, "3123123123123")
   return (
     <Form {...form}>
       <form
@@ -232,7 +233,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
                         onClientUploadComplete={(res) => {
                           // Do something with the response
                           console.log("Files: ", res);
-                          form.setValue("image", res[0].url);
+                          form.setValue("image", res[0]?.url, { shouldDirty: true, shouldValidate: true } || "");
                         }}
                         onUploadError={(error: Error) => {
                           // Do something with the error.
@@ -240,7 +241,12 @@ const CourseUpdate = ({ course }: { course: any }) => {
                         }}
                       />
                     ) : (
-                      <Image src={imgWatch} fill alt="image" className="object-contain"></Image>
+                      <Image
+                        src={imgWatch}
+                        fill
+                        alt="image"
+                        className="object-contain"
+                      ></Image>
                     )}
                   </div>
                 </FormControl>
@@ -357,7 +363,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
                 </FormLabel>
                 <FormControl>
                   <>
-                    {courseInfo.requirements.map((item, index) => {
+                    {courseInfo.requirements.map((item: any, index: any) => {
                       return (
                         <Input
                           type="text"
@@ -399,7 +405,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
                 </FormLabel>
                 <FormControl>
                   <>
-                    {courseInfo.benefits.map((item, index) => {
+                    {courseInfo.benefits.map((item: any, index: any) => {
                       return (
                         <Input
                           key={index + 1}
@@ -443,7 +449,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
                 </FormLabel>
                 <FormControl>
                   <>
-                    {courseInfo.qa.map((item, index) => {
+                    {courseInfo.qa.map((item: any, index: any) => {
                       return (
                         <div className="grid grid-cols-2 gap-5" key={index + 1}>
                           <Input
@@ -478,7 +484,7 @@ const CourseUpdate = ({ course }: { course: any }) => {
         </div>
         <Button
           type="submit"
-          variant={"primary"}
+          // variant={"primary"}
           className="ml-5 w-[150px]"
           isLoading={isLoading}
           disabled={isLoading}

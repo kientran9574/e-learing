@@ -13,6 +13,9 @@ import Coupon from "@/database/coupon.model";
 export const createOrder = async (params: TCreateOrderParams) => {
   try {
     connectToDatabase();
+    if (!params.coupon || params.coupon === "") {
+      params.coupon = null; // Chuyển giá trị rỗng thành null
+    }
     // Nếu mà coupoun nó là rỗng thì sẽ xóa cái coupon khỏi cái params đó đi
     // if (!params.coupon) delete params.coupon;S
     const newOrder = await Order.create(params);
@@ -116,5 +119,22 @@ export const updateOrder = async (orderId: string, status: EOrderStatus) => {
     return { success: true };
   } catch (error) {
     console.log("🚀 ~ updateOrder ~ error:", error);
+  }
+};
+export const getOrderDetails = async (code: string) => {
+  try {
+    connectToDatabase();
+    const result = await Order.findOne({ code }).populate({
+      path: "user",
+      model: User,
+      select: "name",
+    }).populate({
+      path: "course",
+      model: Course,
+      select: "title",
+    });
+    return JSON.parse(JSON.stringify(result));
+  } catch (error) {
+    console.log(error);
   }
 };

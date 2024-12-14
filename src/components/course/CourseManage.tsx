@@ -22,7 +22,6 @@ import { updateCourse } from "@/lib/actions/courses.action";
 import { ECourseStatus } from "@/types/enum";
 import { toast } from "react-toastify";
 import { Input } from "../ui/input";
-import Link from "next/link";
 import IconAddItem from "@/icons/IconAddItem";
 import {
   Select,
@@ -33,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useQueryString from "@/hook/useQueryString";
+import Link from "next/link";
 const CourseManage = ({ courses }: { courses: ICourse[] }) => {
   const { router, pathname, createQueryString } = useQueryString();
   const handleStatusParams = (status: string) => {
@@ -186,17 +186,18 @@ const CourseManage = ({ courses }: { courses: ICourse[] }) => {
                       {courseStatusItem?.title}
                     </button>
                   </TableCell>
+                  {/* http://localhost:3000/manage/course/update?slug=khoa-hoc-java-pro */}
                   <TableCell>
                     <div className="flex gap-3">
-                      <button className={commonClassNames.action}>
+                      <Link href={`http://localhost:3000/manage/course/update-content?slug=${course.slug}`} className={commonClassNames.action}>
                         <IconCourse></IconCourse>
-                      </button>
-                      <button className={commonClassNames.action}>
+                      </Link>
+                      <Link href={`http://localhost:3000/course/${course.slug}`} className={commonClassNames.action}>
                         <IconEye></IconEye>
-                      </button>
-                      <button className={commonClassNames.action}>
+                      </Link>
+                      <Link href={`http://localhost:3000/manage/course/update?slug=${course.slug}`} className={commonClassNames.action}>
                         <IconEdit></IconEdit>
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(course.slug)}
                         className={commonClassNames.action}

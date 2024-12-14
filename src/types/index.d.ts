@@ -95,7 +95,7 @@ type TCreateOrderParams = {
   total?: number;
   amount?: number;
   discount?: number;
-  coupon?: string;
+  coupon?: string | null;
 };
 // Coupon
 export type TCouponParams = Omit<ICoupon, "courses"> & {

@@ -44,6 +44,7 @@ const orderSchema = new Schema<IOrder>({
   coupon: {
     type: Schema.Types.ObjectId,
     ref: "Coupon",
+    default: null,
   },
   status: {
     type: String,

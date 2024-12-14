@@ -20,6 +20,7 @@ const nextConfig = {
                 port: "",
                 pathname: "/**",
             },
+            // https://sea1.ingest.uploadthing.com
         ],
     },
 };

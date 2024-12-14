@@ -31,7 +31,7 @@ const CourseUpdateContent = ({ course }: { course: TCourseUpdateParams }) => {
   const [lectureIdIndex, setLectureIdIndex] = useState("");
   const [lessonsEdit, setLessonsEdit] = useState("");
   const [lessonsIdIndex, setLessonsIdIndex] = useState("");
-  const lectures = course.lectures;
+  const lectures = course ? course.lectures : [];
   const handleAddLecture = async () => {
     try {
       const res = await createLecture({
@@ -142,194 +142,203 @@ const CourseUpdateContent = ({ course }: { course: TCourseUpdateParams }) => {
         setLessonsIdIndex("");
         return;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("Lỗi rồi",error)
+    }
   };
   // Nhớ thứ 5 làm chức năng xóa nhé
   return (
     <div className="p-5">
       <div className="flex flex-col gap-5">
-        {lectures.map((item: TUpdateCourseLecture) => {
-          return (
-            <div className="flex flex-col gap-5" key={item._id}>
-              <Accordion type="single" collapsible={Boolean(!lectureIdIndex)}>
-                <AccordionItem value={item._id}>
-                  <AccordionTrigger>
-                    <div className="flex items-center w-full justify-between pr-5 gap-3">
-                      {item._id === lectureIdIndex ? (
-                        <>
-                          <div className="flex items-center justify-between w-full">
-                            <div className="flex-grow pr-5">
-                              <Input
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                }}
-                                onChange={(e) => {
-                                  setLectureEdit(e.target.value);
-                                }}
-                                placeholder="Tên chương..."
-                                defaultValue={item.title}
-                              ></Input>
+        {lectures &&
+          lectures.map((item: TUpdateCourseLecture) => {
+            return (
+              <div className="flex flex-col gap-5" key={item._id}>
+                <Accordion type="single" collapsible={Boolean(!lectureIdIndex)}>
+                  <AccordionItem value={item._id}>
+                    <AccordionTrigger>
+                      <div className="flex items-center w-full justify-between pr-5 gap-3">
+                        {item._id === lectureIdIndex ? (
+                          <>
+                            <div className="flex items-center justify-between w-full">
+                              <div className="flex-grow pr-5">
+                                <Input
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                  }}
+                                  onChange={(e) => {
+                                    setLectureEdit(e.target.value);
+                                  }}
+                                  placeholder="Tên chương..."
+                                  defaultValue={item.title}
+                                ></Input>
+                              </div>
+                              <div className="flex gap-3">
+                                <IconCheck
+                                  className={cn(
+                                    commonClassNames.action,
+                                    "text-green-500"
+                                  )}
+                                  onClick={(e) =>
+                                    handleUpdateLecture(e, item._id)
+                                  }
+                                ></IconCheck>
+                                <IconCancel
+                                  className={cn(
+                                    commonClassNames.action,
+                                    "text-red-500"
+                                  )}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setLectureIdIndex("");
+                                  }}
+                                ></IconCancel>
+                              </div>
                             </div>
-                            <div className="flex gap-3">
-                              <IconCheck
+                          </>
+                        ) : (
+                          <>
+                            <div className="">{item.title}</div>
+                            <div className="flex gap-2">
+                              <span
                                 className={cn(
                                   commonClassNames.action,
-                                  "text-green-500"
+                                  "text-yellow-500"
                                 )}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setLectureIdIndex(item._id);
+                                }}
+                              >
+                                <IconEdit></IconEdit>
+                              </span>
+                              <div
+                                typeof="button"
                                 onClick={(e) =>
-                                  handleUpdateLecture(e, item._id)
+                                  handleDeleteLecture(e, item._id)
                                 }
-                              ></IconCheck>
-                              <IconCancel
                                 className={cn(
                                   commonClassNames.action,
                                   "text-red-500"
                                 )}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setLectureIdIndex("");
-                                }}
-                              ></IconCancel>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="">{item.title}</div>
-                          <div className="flex gap-2">
-                            <span
-                              className={cn(
-                                commonClassNames.action,
-                                "text-yellow-500"
-                              )}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setLectureIdIndex(item._id);
-                              }}
-                            >
-                              <IconEdit></IconEdit>
-                            </span>
-                            <div
-                              typeof="button"
-                              onClick={(e) => handleDeleteLecture(e, item._id)}
-                              className={cn(
-                                commonClassNames.action,
-                                "text-red-500"
-                              )}
-                            >
-                              <IconDelete></IconDelete>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="border-none">
-                    {item.lessons.map((lesson: ILesson, index) => {
-                      return (
-                        <Accordion
-                          type="single"
-                          collapsible={!lessonsIdIndex}
-                          key={lesson._id}
-                        >
-                          <AccordionItem value={lesson._id}>
-                            <AccordionTrigger>
-                              <div className="flex items-center w-full justify-between pr-5 gap-3">
-                                {" "}
-                                {lesson._id === lessonsIdIndex ? (
-                                  <>
-                                    <div className="flex items-center justify-between w-full">
-                                      <div className="flex-grow pr-5">
-                                        <Input
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                          }}
-                                          onChange={(e) => {
-                                            setLessonsEdit(e.target.value);
-                                          }}
-                                          placeholder="Tên chương..."
-                                          defaultValue={lesson.title}
-                                        ></Input>
-                                      </div>
-                                      <div className="flex gap-3">
-                                        <IconCheck
-                                          className={cn(
-                                            commonClassNames.action,
-                                            "text-green-500"
-                                          )}
-                                          onClick={(e) =>
-                                            handleUpdateLessons(e, lesson._id)
-                                          }
-                                        ></IconCheck>
-                                        <IconCancel
-                                          className={cn(
-                                            commonClassNames.action,
-                                            "text-red-500"
-                                          )}
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setLessonsIdIndex("");
-                                          }}
-                                        ></IconCancel>
-                                      </div>
-                                    </div>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div className="">{lesson.title}</div>
-                                    <div className="flex gap-2">
-                                      <span
-                                        className={cn(
-                                          commonClassNames.action,
-                                          "text-yellow-500"
-                                        )}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setLessonsIdIndex(lesson._id);
-                                        }}
-                                      >
-                                        <IconEdit></IconEdit>
-                                      </span>
-                                      <div
-                                        typeof="button"
-                                        // onClick={(e) =>
-                                        //   handleDeleteLessons(e, lesson._id)
-                                        // }
-                                        className={cn(
-                                          commonClassNames.action,
-                                          "text-red-500"
-                                        )}
-                                      >
-                                        <IconDelete></IconDelete>
-                                      </div>
-                                    </div>
-                                  </>
-                                )}{" "}
+                              >
+                                <IconDelete></IconDelete>
                               </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                              <LessonItemUpdate
-                                lesson={lesson}
-                              ></LessonItemUpdate>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                      );
-                    })}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-              <Button
-                className="block ml-auto w-fit"
-                onClick={() => handleAddLesson(item._id, course._id)}
-              >
-                Thêm bài học mới
-              </Button>
-            </div>
-          );
-        })}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="border-none">
+                      {item &&
+                        item.lessons.map((lesson: ILesson, index) => {
+                          return (
+                            <Accordion
+                              type="single"
+                              collapsible={!lessonsIdIndex}
+                              key={lesson._id}
+                            >
+                              <AccordionItem value={lesson._id}>
+                                <AccordionTrigger>
+                                  <div className="flex items-center w-full justify-between pr-5 gap-3">
+                                    {" "}
+                                    {lesson._id === lessonsIdIndex ? (
+                                      <>
+                                        <div className="flex items-center justify-between w-full">
+                                          <div className="flex-grow pr-5">
+                                            <Input
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                              }}
+                                              onChange={(e) => {
+                                                setLessonsEdit(e.target.value);
+                                              }}
+                                              placeholder="Tên chương..."
+                                              defaultValue={lesson.title}
+                                            ></Input>
+                                          </div>
+                                          <div className="flex gap-3">
+                                            <IconCheck
+                                              className={cn(
+                                                commonClassNames.action,
+                                                "text-green-500"
+                                              )}
+                                              onClick={(e) =>
+                                                handleUpdateLessons(
+                                                  e,
+                                                  lesson._id
+                                                )
+                                              }
+                                            ></IconCheck>
+                                            <IconCancel
+                                              className={cn(
+                                                commonClassNames.action,
+                                                "text-red-500"
+                                              )}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                setLessonsIdIndex("");
+                                              }}
+                                            ></IconCancel>
+                                          </div>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <div className="">{lesson.title}</div>
+                                        <div className="flex gap-2">
+                                          <span
+                                            className={cn(
+                                              commonClassNames.action,
+                                              "text-yellow-500"
+                                            )}
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setLessonsIdIndex(lesson._id);
+                                            }}
+                                          >
+                                            <IconEdit></IconEdit>
+                                          </span>
+                                          <div
+                                            typeof="button"
+                                            // onClick={(e) =>
+                                            //   handleDeleteLessons(e, lesson._id)
+                                            // }
+                                            className={cn(
+                                              commonClassNames.action,
+                                              "text-red-500"
+                                            )}
+                                          >
+                                            <IconDelete></IconDelete>
+                                          </div>
+                                        </div>
+                                      </>
+                                    )}{" "}
+                                  </div>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <LessonItemUpdate
+                                    lesson={lesson}
+                                  ></LessonItemUpdate>
+                                </AccordionContent>
+                              </AccordionItem>
+                            </Accordion>
+                          );
+                        })}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+                <Button
+                  className="block ml-auto w-fit"
+                  onClick={() => handleAddLesson(item._id, course._id)}
+                >
+                  Thêm bài học mới
+                </Button>
+              </div>
+            );
+          })}
       </div>
 
       <Button className="mt-5" onClick={handleAddLecture}>
